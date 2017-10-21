@@ -101,7 +101,7 @@ Configuration files for TINC connection "myremote" are located in : /etc/tinc/my
 
 ```
 #!/bin/bash
-/etc/tinc/myremote/trunk-tap.py -start -i eth1 -b remotebr -v=/etc/tinc/myremote/vlans/ -t $INTERFACE
+/etc/tinc/myremote/trunk-tap.py -stop -i eth1 -b remotebr -v=/etc/tinc/myremote/vlans/ -t $INTERFACE
 ```
 
 * Create a folder called /etc/tinc/myremote/vlans
