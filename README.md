@@ -16,12 +16,19 @@ After that, the local infrastructure is ready to be attached to the VPN layer 2 
 
 This is achieved by enabling the TAP interface ("up"), creating VLAN interfaces on the TAP adapter (e.g. 'tap0.100', 'tap0.105', ...) and attaching them to the respective bridge.
 
-## Dependencies (on Debian):
+## Use cases
+
+* Connecting the network infrastructure of two geographically, WAN-separated sites while allowing members of the network to opperate on the same IP-subnets (that is, without routing)
+* Quick remote access to a pre-existing network infrastructure (e.g. VMware vSphere port groups (based on VLANs)) with significantly less effort and potential configuration mistakes - compared to layer 3 VPN solutions
+* Avoiding messy, hard to maintain ifup/ifdown tinc-up/tinc-down configuration scripts
+
+## Dependencies
 * python3
 * iproute2
 * bridge-utils
 * vlan (including kernel module '8021q' in /etc/modules)
---> Tested on Ubuntu 16.04 and Debian 9
+
+Successfully tested on Ubuntu 16.04 and Debian 9 with [Tinc VPN](https://www.tinc-vpn.org).
 
 
 ## Illustration
@@ -35,6 +42,38 @@ This is achieved by enabling the TAP interface ("up"), creating VLAN interfaces 
 
  Hint: Interface names (ethernet adapter, bridge name, ...)
  do not neccesarily have to be identical among sites.
+
+```
+
+## Command line arguments
+
+```
+./trunk-tap.py --help
+usage: trunk-tap.py [-h] [-start] [-stop] [-i TRUNK_INTERFACE]
+                    [-t TAP_INTERFACE] [-v VLAN_DIR] [-b BRIDGE_NAME]
+                    [--no-tap]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -start                Creates all interfaces and establishes VLAN bridges
+  -stop                 Reverses -start: Removes the previously created
+                        interfaces
+  -i TRUNK_INTERFACE, --interface TRUNK_INTERFACE
+                        Specify the trunk interface on the host that will
+                        provide the VLANs to the network (e.g. eth1)
+  -t TAP_INTERFACE, --tap-interface TAP_INTERFACE
+                        Specify the TAP interface on the host that will be
+                        used by TINC/OpenVPN (e.g. $INTERFACE, tap0)
+  -v VLAN_DIR, --vlan-dir VLAN_DIR
+                        The path to the folder that contains the files that
+                        represent the VLANs that will be created. - Default:
+                        ./vlans/
+  -b BRIDGE_NAME, --bridge BRIDGE_NAME
+                        Name of the bridge that will be created. (e.g. trunk0,
+                        br0)
+  --no-tap              Only for special use: If used, the VLANs will be
+                        created locally (e.g. trunk0.105 <-> eth1.105), but
+                        the TAP interface won't be used.
 
 ```
 
