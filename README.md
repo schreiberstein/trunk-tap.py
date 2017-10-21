@@ -143,6 +143,7 @@ remotebr.100		8000.000000000	no		eth1.100
                                                         myremote.100
 
 ```
+Upon termination of the VPN connection, trunk-tap.py will remove all adapters that were previously created by it.
 
 
 ## License
