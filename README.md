@@ -77,5 +77,73 @@ optional arguments:
 
 ```
 
+## Sample configuration - TINC VPN
+
+Hint: Connection name is "myremote" in this example.
+'eth1' is the ethernet interface that will be used as trunk port.
+'remotebr' is the name for the bridge interfaces that will be created by the script.
+"/etc/tinc/myremote/vlans/" is the path of the folders that contain the empty files representing the VLANs to add.
+The "$INTERFACE" is a variable for the TAP interface (here: "myremote" created by tinc) that is made available in the tinc-up or tinc-down scripts.
+It may be entered manually (tap0, nameofyourtincconnection, ...).
+
+
+Configuration files for TINC connection "myremote" are located in : /etc/tinc/myremote/
+
+* Create a regular TINC connection - in a "Mode=Switch" configuration
+* Copy "trunk-tap.py" into the "/etc/tinc/myremote/" folder, make it executable (chmod +x)
+* Create a new "tinc-up" file with the following contents and make it executable as well
+
+```
+#!/bin/bash
+/etc/tinc/myremote/trunk-tap.py -start -i eth1 -b remotebr -v=/etc/tinc/myremote/vlans/ -t $INTERFACE
+```
+* Create a new "tinc-down" file with the following contents and make it executable as well
+
+```
+#!/bin/bash
+/etc/tinc/myremote/trunk-tap.py -start -i eth1 -b remotebr -v=/etc/tinc/myremote/vlans/ -t $INTERFACE
+```
+
+* Create a folder called /etc/tinc/myremote/vlans
+* Create empty files for the VLAN IDs of your desired networks
+
+```
+root@linux:/etc/tinc/myremote/vlans# touch 100 105 110 800 850 1015
+root@linux:/etc/tinc/myremote/vlans# ls
+100  105  110  800  850  1015
+```
+
+* Do the same on the host that you wish to connect your VLANs to
+* Test your connection (e.g. "tincd -d 5 -D -n myremote" in a GNU screen session)
+* Attach a VLAN capable machine to your trunk port, create a connection on a VLAN, try to ping to the 'remote' network
+
+The "ip a" connection list and bridge status would look like this (excerpt for VLAN ID 100):
+```
+root@linux:/etc/tinc# ip a
+...
+3: eth1.100@eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master remotebr state UP group default qlen 1000
+    link/ether xx:xx:xx:xx:xx:xx brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::xxx:xxxx:xxxx:xxxx/64 scope link
+       valid_lft forever preferred_lft forever
+
+4: myremote.100: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UNKNOWN group default qlen 1000
+    link/ether xx:xx::xx:xx:xx brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::xxxx:xxxx:xxx:xxxx/64 scope link 
+       valid_lft forever preferred_lft forever
+
+5: remotebr.100: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether xx:xx:xx:xx:xx:xx brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::xxxx:xxxx:xxxx:xxx/64 scope link 
+       valid_lft forever preferred_lft forever
+
+
+root@linux:/etc/tinc# brctl show
+bridge name	bridge id		STP enabled	interfaces
+remotebr.100		8000.000000000	no		eth1.100
+                                                        myremote.100
+
+```
+
+
 ## License
 This script is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
