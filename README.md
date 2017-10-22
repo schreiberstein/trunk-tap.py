@@ -6,7 +6,7 @@ A clean and efficient way to transport VLANs over a TINC/OpenVPN TAP-interface.
 trunk-tap.py is a Linux command line utility to connects a set of 802.1Q VLANs to a TINC VPN/OpenVPN TAP-interface
 and is designed to be invoked by ifup/ifdown scripts after starting or stopping a VPN connection.
 
-It reads the filenames from the content of folder containing files corresponding to the VLAN ID (e.g. '100', '105', ...),
+It reads the filenames from the content of a folder containing files corresponding to the VLAN ID (e.g. '100', '105', ...),
 then creates VLAN interfaces on a local Ethernet adapter used as "trunk port" (e.g. 'eth1.100', 'eth1.105', ...).
 
 The script then proceeds to generate bridge interfaces for every VLAN ID. (e.g. "trunk0.100", "trunk0.105", ...)
@@ -31,7 +31,7 @@ This is achieved by enabling the TAP interface ("up"), creating VLAN interfaces 
 Successfully tested on Ubuntu 16.04 and Debian 9 with [Tinc VPN](https://www.tinc-vpn.org).
 
 
-## Illustration
+## Illustration (Logical)
 
 ```
                               (TINC VPN / OpenVPN)
@@ -44,6 +44,21 @@ Successfully tested on Ubuntu 16.04 and Debian 9 with [Tinc VPN](https://www.tin
  do not neccesarily have to be identical among sites.
 
 ```
+
+## Illustration (Physical)
+
+```
+                                    
+   [----------------------------------------------- SITE 1 ---------------------------]                           [------- SITE 2 -----]
+
+   [---- HARDWARE ----][-------------------------- SOFTWARE --------------------------][-------- HARDWARE --------]
+
+                      ||    /--> eth1.100 <-> trunk0.100 <--\   ################      ||      #/#/#/#/#/#/#/#/  |/|
+   Local Network <-> eth1 <<---> eth1.105 <-> trunk0.105 <--->> ---TAP-TUNNEL--- ==> eth0 ==>  ---INTERNET---   |/|    Same for SITE 2
+                      ||    \--> eth1.110 <-> trunk0.110 <--/   ################      ||      #\#\#\#\#\#\#\#\  |/|  (mirrored/reversed)
+
+```
+
 
 ## Command line arguments
 
