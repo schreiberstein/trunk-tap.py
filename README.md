@@ -51,7 +51,7 @@ Successfully tested on Ubuntu 16.04 and Debian 9 with [Tinc VPN](https://www.tin
                                     
    [----------------------------------------------- SITE 1 ---------------------------]                           [------- SITE 2 -----]
 
-   [---- HARDWARE ----][-------------------------- SOFTWARE --------------------------][-------- HARDWARE --------]
+   [---- HARDWARE ----][-------------------------- SOFTWARE --------------------------][--------- HARDWARE -------]
 
                       ||    /--> eth1.100 <-> trunk0.100 <--\   ################      ||      #/#/#/#/#/#/#/#/  |/|
    Local Network <-> eth1 <<---> eth1.105 <-> trunk0.105 <--->> ---TAP-TUNNEL--- ==> eth0 ==>  ---INTERNET---   |/|    Same for SITE 2
