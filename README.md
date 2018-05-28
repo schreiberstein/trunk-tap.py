@@ -3,7 +3,7 @@ A clean and efficient way to transport VLANs over a TINC/OpenVPN TAP-interface.
 
 
 ## Introduction
-trunk-tap.py is a Linux command line utility to connects a set of 802.1Q VLANs to a TINC VPN/OpenVPN TAP-interface
+trunk-tap.py is a Linux command line utility that connects a set of 802.1Q VLANs to a TINC VPN/OpenVPN TAP-interface
 and is designed to be invoked by ifup/ifdown scripts after starting or stopping a VPN connection.
 
 It reads the filenames from the content of a folder containing files corresponding to the VLAN ID (e.g. '100', '105', ...),
